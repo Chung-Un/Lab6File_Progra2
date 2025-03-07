@@ -19,7 +19,7 @@ public class ManejoArchivos {
     StringBuilder main = null;
     
     public void setDireccion(String direccion){
-          file = new File(direccion);
+          file = new File(direccion + ".docx");
     }
     
     public boolean crearArchivo() throws IOException{
