@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  *
@@ -63,17 +64,24 @@ public class ManejoArchivos {
         return main;
     }
     
-    public StringBuilder dir(){
-        StringBuilder builder = new StringBuilder("");
-        if(file.isDirectory()){
-            builder.append(file.getName() + "\n");
-            for(File child: file.listFiles()){
-               builder.append(child.getName() +"\n");
+    public DefaultMutableTreeNode estructuraTree() {
+        if (file == null) {
+            return null;
+        }
+        return crearNodos(file);
+    }
+
+    private DefaultMutableTreeNode crearNodos(File file) {
+        DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(file.getName());
+        
+        if (file.isDirectory()) {
+            File[] children = file.listFiles();
+            if (children != null) {
+                for (File child : children) {
+                    nodo.add(crearNodos(child));
+                }
             }
         }
-        else if(file.isFile()){
-         builder.append(file.getName());
-        }
-    return builder;
+        return nodo;
     }
 }
