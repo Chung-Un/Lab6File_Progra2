@@ -5,9 +5,13 @@
 package lab6file_progra2;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.rtf.RTFEditorKit;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
@@ -15,55 +19,53 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author chung
  */
 public class ManejoArchivos {
-    File file = null;
-    static StringBuilder temp = null;
-    StringBuilder main = null;
-    
-    public void setDireccion(String direccion){
-          file = new File(direccion + ".docx");
+    private File file = null;
+    private StyledDocument document = new DefaultStyledDocument();
+    private RTFEditorKit rtfKit = new RTFEditorKit();
+
+    public void setDireccion(String direccion) {
+        file = new File(direccion + ".rtf");
     }
-    
-    public boolean crearArchivo() throws IOException{
+
+    public boolean crearArchivo() throws IOException {
         return file.createNewFile();
     }
-    
-    public boolean crearFolder(){
+
+    public boolean crearFolder() {
         return file.mkdirs();
     }
-    
-    public boolean borrar(File file){
-        if(file.isDirectory()){
-            for(File hijos: file.listFiles()){
+
+    public boolean borrar(File file) {
+        if (file.isDirectory()) {
+            for (File hijos : file.listFiles()) {
                 borrar(hijos);
             }
         }
         return file.delete();
     }
-    
-    public void escribir(String contenido)throws IOException{
-        if (file.isFile()){
-            try(FileWriter writer = new FileWriter(file,false)){
-                writer.write(contenido);
+
+    public void escribir(StyledDocument doc) throws IOException, BadLocationException {
+        if (file.isFile()) {
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                rtfKit.write(fos, doc, 0, doc.getLength());
+            } catch (BadLocationException e) {
+                e.printStackTrace();
             }
         }
     }
-    
-    public StringBuilder leer() throws IOException{
-        
-        if(file.isFile()){
-            temp = main;
-            main = null;
-            try(FileReader reader = new FileReader(file)){
-                int caracter;
-                while((caracter = reader.read()) != -1){
-                main.append((char)caracter);
-                }
+
+    public StyledDocument leer() throws IOException {
+        if (file.isFile()) {
+            try (FileInputStream fis = new FileInputStream(file)) {
+                document = new DefaultStyledDocument();
+                rtfKit.read(fis, document, 0);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
             }
         }
-        
-        return main;
+        return document;
     }
-    
+
     public DefaultMutableTreeNode estructuraTree() {
         if (file == null) {
             return null;
@@ -73,7 +75,7 @@ public class ManejoArchivos {
 
     private DefaultMutableTreeNode crearNodos(File file) {
         DefaultMutableTreeNode nodo = new DefaultMutableTreeNode(file.getName());
-        
+
         if (file.isDirectory()) {
             File[] children = file.listFiles();
             if (children != null) {
@@ -85,3 +87,5 @@ public class ManejoArchivos {
         return nodo;
     }
 }
+
+
