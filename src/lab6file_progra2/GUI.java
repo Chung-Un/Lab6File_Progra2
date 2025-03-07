@@ -12,7 +12,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
-import java.util.ArrayList;
 import javax.swing.*;
 
 /**
@@ -35,13 +34,14 @@ public class GUI {
      
     // numeros
     Dimension textBoxSize = new Dimension(300, 300);
-    Dimension areaSize = new Dimension(270, 270);
+    
+    
     public GUI () {
         //
         
         //
         Frame = new frame(new Dimension(600, 600), "WORD");
-        mainPanel = new panel(Color.GRAY, new GridBagLayout(), this);
+        mainPanel = new panel(Color.GRAY, new BorderLayout(), this);
         filePanel = new panel(Color.WHITE, null, this);
         colorPanel = new panel(Color.GRAY, new GridLayout(), this);
         fuente = new JLabel("Fuente: ");
@@ -53,10 +53,11 @@ public class GUI {
         Scroll.setPreferredSize(new Dimension(300, 300));
         
         //
-        mainPanel.add(colorPanel, gbm.setGBC(1, 1, GridBagConstraints.HORIZONTAL));
-        mainPanel.add(Scroll, gbm.setGBC(0, 4, 3, 3, GridBagConstraints.BOTH, new Insets(5, 5, 5, 5)));
-        mainPanel.add(tam, gbm.setGBC(0, 2, GridBagConstraints.HORIZONTAL));
-        mainPanel.add(fuente, gbm.setGBC(0, 1, GridBagConstraints.HORIZONTAL));
+        colorPanel.setPreferredSize(new Dimension(300, 150));
+        mainPanel.add(colorPanel, BorderLayout.NORTH);
+        mainPanel.add(Scroll, BorderLayout.CENTER);
+        mainPanel.add(tam, BorderLayout.NORTH);
+        mainPanel.add(fuente, BorderLayout.NORTH);
         mainPanel.setPreferredSize(new Dimension(400, 550));
         
         //
@@ -121,6 +122,8 @@ class scroller extends JScrollPane {
         setSize(gui.textBoxSize);
         
         // componentes 
+        containerPanel.setSize(this.getSize());
+        testo.setSize(containerPanel.getSize());
         testo.setWrapStyleWord(true);
         testo.setLineWrap(true);
         containerPanel.add(testo);
