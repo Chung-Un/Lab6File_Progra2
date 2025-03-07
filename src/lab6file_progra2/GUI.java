@@ -12,7 +12,11 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 
 /**
  *
@@ -23,15 +27,20 @@ public class GUI {
     frame Frame;
     panel mainPanel;
     panel filePanel;
-    panel colorPanel;
-    JLabel fuente;
-    JLabel tam;
-    JComboBox fuenteBox;
-    JComboBox tamBox;
-    JComboBox colorBox;
+    JButton color;
+    JButton fuente;
+    JButton tam;
     scroller Scroll;
     GridBagManager gbm;
-     
+    ManejoArchivos MA; 
+    JTree tree;
+    JButton newFile;
+    JButton open;
+    JButton save;
+    
+    private texto Texto;
+    private JTextPane txtPane;
+    
     // numeros
     Dimension textBoxSize = new Dimension(300, 300);
     
@@ -43,31 +52,72 @@ public class GUI {
         Frame = new frame(new Dimension(600, 600), "WORD");
         mainPanel = new panel(Color.GRAY, new BorderLayout(), this);
         filePanel = new panel(Color.WHITE, null, this);
-        colorPanel = new panel(Color.GRAY, new GridLayout(), this);
-        fuente = new JLabel("Fuente: ");
-        tam = new JLabel("Tamano: ");
-        Scroll = new scroller(Color.WHITE, new BorderLayout(), false, this);
+        color = new JButton(" color ");
+        fuente = new JButton(" fuente ");
+        tam = new JButton(" tamano ");
         gbm = new GridBagManager();
+        Texto = new texto((txtPane = new JTextPane()));
+        Scroll = new scroller(Color.WHITE, new BorderLayout(), false, this,Texto);
+        MA= new ManejoArchivos();
+        tree = new JTree();
+        save = new JButton("save");
+        newFile = new JButton("new");
+        open = new JButton("open");
+        
+        JPanel btns = new JPanel(new GridLayout(1, 6));
+        btns.add(tam);
+        btns.add(color);
+        btns.add(fuente);
+        btns.add(save);
+        btns.add(newFile);
+        btns.add(open);
+        
+        tam.addActionListener(e -> Texto.cambiarTamano());
+        color.addActionListener(e -> Texto.cambiarColor());
+        fuente.addActionListener(e -> Texto.cambiarFuente());
+        save.addActionListener(e -> {
+            try{
+                if (MA.getFile() == null){    
+                    MA.setDireccion(JOptionPane.showInputDialog("Ingrese el nombre"));
+                    MA.crearArchivo();
+                }
+                MA.escribir(Texto.getTextPane().getStyledDocument());
+            }catch (IOException f) {
+                System.out.println("popop");
+            } 
+            catch (BadLocationException ex) {
+                Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        newFile.addActionListener(e -> {new Lab6File_Progra2();});
+        open.addActionListener(e -> {
+              
+            MA.setDireccion(JOptionPane.showInputDialog("Ingrese el nombre"));
+            try{
+                Texto.getTextPane().setText;
+            }catch (IOException g){
+                System.out.println("opopopo");
+            }
+        });
         
         //
         Scroll.setPreferredSize(new Dimension(300, 300));
         
         //
-        colorPanel.setPreferredSize(new Dimension(300, 150));
-        mainPanel.add(colorPanel, BorderLayout.NORTH);
+        mainPanel.add(btns, BorderLayout.NORTH);
         mainPanel.add(Scroll, BorderLayout.CENTER);
-        mainPanel.add(tam, BorderLayout.NORTH);
-        mainPanel.add(fuente, BorderLayout.NORTH);
+        mainPanel.add(filePanel, BorderLayout.WEST);
         mainPanel.setPreferredSize(new Dimension(400, 550));
         
         //
         filePanel.setPreferredSize(new Dimension(150, 550));
+        filePanel.add(tree);
         
         //
         Frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Frame.setLayout(new BorderLayout());
         Frame.add(mainPanel, BorderLayout.CENTER);
-        Frame.add(filePanel, BorderLayout.WEST);
+
         
         Frame.setVisible(true);
     }
@@ -105,13 +155,13 @@ class panel extends JPanel {
 
 class scroller extends JScrollPane {
     private JPanel containerPanel;
-    private JTextArea testo;
+    private texto Texto;
     private GUI gui;
     
-    public scroller (Color color, LayoutManager layout, boolean horizontal, GUI gui) {
+    public scroller (Color color, LayoutManager layout, boolean horizontal, GUI gui, texto Texto) {
         // configuracion
         containerPanel = new JPanel();
-        testo = new JTextArea();
+        this.Texto = Texto;
         this.gui = gui;
         if (horizontal == true) {
             setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -123,10 +173,8 @@ class scroller extends JScrollPane {
         
         // componentes 
         containerPanel.setSize(this.getSize());
-        testo.setSize(containerPanel.getSize());
-        testo.setWrapStyleWord(true);
-        testo.setLineWrap(true);
-        containerPanel.add(testo);
+        Texto.getTextPane().setSize(containerPanel.getSize());      
+        containerPanel.add(Texto.getTextPane());
         
         // visibilidad
         setViewportView(containerPanel);

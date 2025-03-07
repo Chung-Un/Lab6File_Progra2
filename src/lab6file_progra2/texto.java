@@ -52,4 +52,8 @@ public class texto {
             }
         }
     }
+
+    public JTextPane getTextPane() {
+        return textPane;
+    }  
 }
