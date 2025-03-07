@@ -67,10 +67,8 @@ public class ManejoArchivos {
     }
 
     public DefaultMutableTreeNode estructuraTree() {
-        if (file == null) {
-            return null;
-        }
-        return crearNodos(file);
+        File src = new File("Lab6File_Progra2\\Lab6File_Progra2\\src");
+        return (src == null? null:crearNodos(src));
     }
 
     private DefaultMutableTreeNode crearNodos(File file) {

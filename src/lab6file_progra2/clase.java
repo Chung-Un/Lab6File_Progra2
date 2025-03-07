@@ -13,12 +13,5 @@ import javax.swing.tree.DefaultTreeModel;
  * @author chung
  */
 public class clase {
-    DefaultMutableTreeNode rootNode = MA.estructuraTree();
-        DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
-        tree.setModel(treeModel);
-        
-        // Adding file tree to the left panel
-        JScrollPane treeScrollPane = new JScrollPane(tree);
-        treeScrollPane.setPreferredSize(new Dimension(150, 550)); // Adjust size for left section
-        filePanel.add(treeScrollPane);
+    
 }

@@ -12,11 +12,15 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.rtf.RTFEditorKit;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -51,7 +55,7 @@ public class GUI {
         //
         Frame = new frame(new Dimension(600, 600), "WORD");
         mainPanel = new panel(Color.GRAY, new BorderLayout(), this);
-        filePanel = new panel(Color.WHITE, null, this);
+        filePanel = new panel(Color.WHITE, new BorderLayout(), this);
         color = new JButton(" color ");
         fuente = new JButton(" fuente ");
         tam = new JButton(" tamano ");
@@ -89,12 +93,15 @@ public class GUI {
                 Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        newFile.addActionListener(e -> {new Lab6File_Progra2();});
+        newFile.addActionListener(e -> {new GUI();});
         open.addActionListener(e -> {
               
             MA.setDireccion(JOptionPane.showInputDialog("Ingrese el nombre"));
             try{
-                Texto.getTextPane().setText;
+                Texto.getTextPane().setEditorKit(new RTFEditorKit());
+                FileInputStream fis = new FileInputStream(MA.getFile());
+                Texto.getTextPane().read(fis, Texto.getTextPane().getDocument());
+                Frame.setTitle(MA.getFile().getName());
             }catch (IOException g){
                 System.out.println("opopopo");
             }
@@ -102,6 +109,16 @@ public class GUI {
         
         //
         Scroll.setPreferredSize(new Dimension(300, 300));
+        //
+        DefaultMutableTreeNode rootNode = MA.estructuraTree();
+        DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
+        tree.setModel(treeModel);
+        
+        // Adding file tree to the left panel
+        JScrollPane treeScrollPane = new JScrollPane(tree);
+        treeScrollPane.setPreferredSize(new Dimension(150, 550)); // Adjust size for left section
+        filePanel.add(treeScrollPane);
+        
         
         //
         mainPanel.add(btns, BorderLayout.NORTH);
