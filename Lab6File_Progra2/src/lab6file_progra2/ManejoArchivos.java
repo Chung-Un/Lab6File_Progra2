@@ -68,7 +68,7 @@ public class ManejoArchivos {
         if(file.isDirectory()){
             builder.append(file.getName() + "\n");
             for(File child: file.listFiles()){
-               builder.append(file.getName() +"\n");
+               builder.append(child.getName() +"\n");
             }
         }
         else if(file.isFile()){
